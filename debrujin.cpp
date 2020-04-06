@@ -8,7 +8,7 @@ using namespace std;
 
 #define N 8500
 #define L_s 100 // length of short read
-#define K 50	// length of k-mers
+#define K 29	// length of k-mers
 
 vector<string> short_read(2 * N);
 
@@ -90,13 +90,11 @@ void maximal_nonbranch_paths(){
 				
 				while(1){
 					path += tmp_s[K - 1];
-					//cout << path << endl;
 					Node& tmp_node = map[tmp_s];
 					if(tmp_node.ingree.size() != 1 || tmp_node.outgree.size() != 1) break;
 					tmp_s = (*tmp_node.outgree.begin());
-					//cout << tmp_s << endl; 
 				}
-				if(path.length() >= 2 * L_s)
+				if(path.length() > L_s)
 					out_data.push_back(path);
 			}
 		}
@@ -105,8 +103,12 @@ void maximal_nonbranch_paths(){
 
 void write_file(){
 	ofstream writer("contig.fasta", ios::out);
-	for(string& s : out_data)
-		writer << s << endl << endl;
+	int i = 0;
+	for(string& s : out_data){
+		writer << ">contig_" << i << endl;
+		writer << s << endl; 
+		i++;
+	}
 }
 
 int main(){
@@ -114,5 +116,6 @@ int main(){
 	build_brujin();
 	maximal_nonbranch_paths();
 	write_file();
+	cout << out_data.size() << endl;
 	return 0;	
 } 
